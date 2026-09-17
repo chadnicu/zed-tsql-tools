@@ -31,11 +31,17 @@ test('LSP formats unsaved Unicode documents, follows edits, and rejects malforme
   assert.match(edits[0].newText, /SELECT N'Ștefan 😀'/);
   assert.match(edits[0].newText, /\n {4}, 2 AS value/);
   await connection.sendNotification('textDocument/didChange', {
-    textDocument: { uri, version: 2 }, contentChanges: [{ text: "select 'broken" }],
+    textDocument: { uri, version: 2 }, contentChanges: [{ text: 'select 1\nGO 2\nselect 3;' }],
+  });
+  const batches = await format();
+  assert.match(batches[0].newText, /SELECT 1\nGO 2\nSELECT 3;/);
+  assert.deepEqual(batches[0].range.end, { line: 2, character: 9 });
+  await connection.sendNotification('textDocument/didChange', {
+    textDocument: { uri, version: 3 }, contentChanges: [{ text: "select 'broken" }],
   });
   await assert.rejects(format(), /could not parse/);
   await connection.sendNotification('textDocument/didChange', {
-    textDocument: { uri, version: 3 }, contentChanges: [{ text: edits[0].newText }],
+    textDocument: { uri, version: 4 }, contentChanges: [{ text: edits[0].newText }],
   });
   assert.deepEqual(await format(), []);
   await connection.sendRequest('shutdown');

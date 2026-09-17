@@ -92,6 +92,13 @@ formatted output, so Zed can retain the original document. Blank input is
 unchanged. The wrapper preserves upstream line endings; it does not rewrite
 multiline string literals to force a document-wide newline style.
 
+Standalone `GO` and `GO count` directives are preserved verbatim, including inline
+comments and their line endings; each SQL batch is formatted separately. Text
+inside quoted strings/identifiers or block comments is not treated as a directive.
+A GO directive sharing a multiline block-comment boundary is rejected rather
+than risking changes to the script. A failure in any batch rejects the entire
+formatting operation.
+
 The engine is pinned to `poor-mans-t-sql-formatter@1.6.10`. Its parser is coarse
 and may not understand newer T-SQL. A successful format is not SQL validation.
 Compare formatting against your stored procedures before enabling format on save.

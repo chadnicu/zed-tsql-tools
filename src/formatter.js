@@ -1,4 +1,5 @@
 import formatter from 'poor-mans-t-sql-formatter';
+import { sqlBatches } from './batches.js';
 
 const booleans = ['expandCommaLists', 'trailingCommas', 'spaceAfterExpandedComma',
   'expandBooleanExpressions', 'expandCaseStatements', 'expandBetweenConditions',
@@ -21,6 +22,20 @@ export function validateOptions(options) {
 
 export function formatSql(sql, options = {}) {
   validateOptions(options);
+  if (!sql.trim()) return sql;
+  let output = '';
+  for (const part of sqlBatches(sql)) {
+    if (part.separator) {
+      if (output && !/[\r\n]$/.test(output)) output += '\n';
+      output += part.text;
+    } else {
+      output += formatBatch(part.text, options);
+    }
+  }
+  return output;
+}
+
+function formatBatch(sql, options) {
   if (!sql.trim()) return sql;
   const result = formatter.formatSql(sql, { ...options, includeText: true });
   if (result.errorFound || typeof result.text !== 'string') {

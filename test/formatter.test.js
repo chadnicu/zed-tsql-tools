@@ -6,6 +6,46 @@ import { formatSql } from '../src/formatter.js';
 
 const cli = fileURLToPath(new URL('../bin/format.js', import.meta.url));
 
+test('preserves GO repeat directives on their own lines', () => {
+  for (const newline of ['\n', '\r\n']) {
+    for (const statement of ['select 1', 'select 1;']) {
+      const directive = '  go 2 -- repeat twice';
+      const sql = `${statement}${newline}${directive}${newline}select 3;`;
+      const result = formatSql(sql);
+      assert.ok(result.includes(`\n${directive}${newline}`), result);
+      assert.match(result, /SELECT 3;/);
+      assert.equal(formatSql(result), result);
+    }
+  }
+  assert.match(formatSql('select 1\nGO 2'), /\nGO 2$/);
+  assert.match(formatSql('select 1\nGO 2 /* repeat */\nselect 3;'), /\nGO 2 \/\* repeat \*\/\n/);
+});
+
+test('GO-looking lines in strings, identifiers, and nested comments are not batch separators', () => {
+  for (const literal of ["'first\nGO 2\nlast'", "'it''s\nGO 2\nlast'", '[first]]part\nGO 2\nlast]', '"first""part\nGO 2\nlast"']) {
+    const result = formatSql(`select ${literal};\nGO 3\nselect 4;`);
+    assert.ok(result.includes(literal), result);
+    assert.match(result, /\nGO 3\n/);
+  }
+  const comment = '/* outer\n/* inner */\nGO 2\nend */';
+  const result = formatSql(`${comment}\nselect 1;\nGO 3\nselect 2;`);
+  assert.ok(result.includes(comment), result);
+  assert.match(result, /\nGO 3\n/);
+});
+
+test('rejects directives crossing multiline comment boundaries without partial CLI output', () => {
+  for (const sql of ['select 1;\nGO 2 /* open\nclose */\nselect 3;', 'select 1;\n/* open\nclose */ GO 2\nselect 3;']) {
+    assert.throws(() => formatSql(sql), /Cannot safely format a GO directive/);
+  }
+  const result = spawnSync(process.execPath, [cli], {
+    input: "select 1;\nGO 2\nselect 'unfinished", encoding: 'utf8',
+  });
+  assert.ifError(result.error);
+  assert.equal(result.status, 1);
+  assert.equal(result.stdout, '');
+  assert.match(result.stderr, /could not parse/);
+});
+
 test('formats stored procedures and GO batches without losing literals or comments', () => {
   const sql = "create procedure dbo.Example @id int as begin\n-- keep this\nselect N'Ștefan' as name, 'it''s fine' as note where @id=1; end\nGO\nselect 2;";
   const result = formatSql(sql);
