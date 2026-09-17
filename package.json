@@ -1,0 +1,40 @@
+{
+  "name": "zed-mssql-tools",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Poor Man's T-SQL formatting and sqlcmd tasks for Zed",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "zed-tsql-format": "bin/format.js",
+    "zed-mssql": "bin/query.js",
+    "zed-tsql-lsp": "bin/lsp.js",
+    "zed-tsql-settings": "bin/zed-settings.js"
+  },
+  "scripts": {
+    "test": "node --test",
+    "pack:portable": "npm pack --ignore-scripts --pack-destination dist"
+  },
+  "dependencies": {
+    "poor-mans-t-sql-formatter": "1.6.10",
+    "vscode-languageserver": "9.0.1",
+    "vscode-languageserver-textdocument": "1.0.12"
+  },
+  "license": "AGPL-3.0-only",
+  "files": [
+    "bin/",
+    "src/",
+    "examples/formatter.json",
+    "README.md",
+    "THIRD_PARTY.md",
+    "LICENSE",
+    "PUBLISHING.md"
+  ],
+  "bundledDependencies": [
+    "poor-mans-t-sql-formatter",
+    "vscode-languageserver",
+    "vscode-languageserver-textdocument"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "languages": {
+    "SQL": {
+      "format_on_save": "off",
+      "formatter": {
+        "external": {
+          "command": "node",
+          "arguments": ["bin/format.js", "--config", "examples/formatter.json"]
+        }
+      }
+    }
+  }
+}

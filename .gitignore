@@ -1,0 +1,6 @@
+node_modules/
+.mssql-profiles.json
+dist/
+*.tgz
+extension/target/
+extension/extension.wasm

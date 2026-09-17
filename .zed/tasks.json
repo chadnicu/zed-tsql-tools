@@ -1,0 +1,19 @@
+[
+  {
+    "label": "MSSQL: run saved file (dev)",
+    "command": "node",
+    "args": ["bin/query.js", "run", "dev", "--zed-file"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "save": "none",
+    "reveal": "always"
+  },
+  {
+    "label": "MSSQL: list connections",
+    "command": "node",
+    "args": ["bin/query.js", "list"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "reveal": "always"
+  }
+]

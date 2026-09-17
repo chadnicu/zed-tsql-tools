@@ -1,0 +1,11 @@
+id = "poor-mans-tsql"
+name = "Poor Man's T-SQL Formatter"
+version = "0.1.0"
+schema_version = 1
+description = "Format SQL Server scripts with Poor Man's T-SQL Formatter."
+authors = ["Nicu"]
+
+# Add the public repository URL before registry submission.
+[language_servers.poor-mans-tsql]
+name = "Poor Man's T-SQL Formatter"
+languages = ["SQL"]

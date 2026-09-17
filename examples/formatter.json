@@ -1,0 +1,7 @@
+{
+  "indent": "    ",
+  "uppercaseKeywords": true,
+  "trailingCommas": false,
+  "spaceAfterExpandedComma": true,
+  "breakJoinOnSections": true
+}
