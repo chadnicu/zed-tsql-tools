@@ -2,6 +2,9 @@
 import { createConnection, TextDocuments, TextDocumentSyncKind, ResponseError, ErrorCodes } from 'vscode-languageserver/node.js';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { formatSql, validateOptions } from '../src/formatter.js';
+import { readFileSync } from 'node:fs';
+
+const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
 const connection = createConnection(process.stdin, process.stdout);
 const documents = new TextDocuments(TextDocument);
@@ -16,7 +19,7 @@ connection.onInitialize(params => {
   return { capabilities: {
     textDocumentSync: TextDocumentSyncKind.Incremental,
     documentFormattingProvider: true,
-  }, serverInfo: { name: 'poor-mans-tsql', version: '0.1.0' } };
+  }, serverInfo: { name: 'poor-mans-tsql-lsp', version } };
 });
 
 connection.onDocumentFormatting(params => {

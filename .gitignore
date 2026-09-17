@@ -4,3 +4,11 @@ dist/
 *.tgz
 extension/target/
 extension/extension.wasm
+.env
+.env.*
+!.env.example
+profiles.json
+*.log
+*.pem
+*.key
+coverage/

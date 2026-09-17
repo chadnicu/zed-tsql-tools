@@ -15,7 +15,7 @@ export function validateOptions(options) {
       : booleans.includes(key) ? typeof value === 'boolean'
       : integers.includes(key) ? Number.isInteger(value) && value >= 0 && value <= 10000
       : false;
-    if (!valid) throw new Error(`Invalid formatter option: ${key}`);
+    if (!valid) throw new Error(`Invalid formatter option: ${JSON.stringify(key)}`);
   }
   return options;
 }

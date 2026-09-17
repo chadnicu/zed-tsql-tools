@@ -24,16 +24,33 @@ export function queryCommand(profile, file, environment = process.env) {
 export function runQuery(executable, command) {
   return new Promise((resolve, reject) => {
     const child = spawn(executable, command.args, { env: command.env, stdio: 'inherit', shell: false });
-    // Keep the parent alive until sqlcmd exits after cancellation.
-    const interrupt = () => child.kill('SIGINT');
-    process.on('SIGINT', interrupt);
-    child.once('error', error => {
+    let interrupted = false;
+    let forceKill;
+    const cleanup = () => {
+      clearTimeout(forceKill);
       process.off('SIGINT', interrupt);
+      process.off('SIGTERM', interrupt);
+    };
+    const interrupt = () => {
+      if (interrupted) {
+        child.kill('SIGKILL');
+        return;
+      }
+      interrupted = true;
+      child.kill('SIGINT');
+      // sqlcmd may cancel a query without exiting. Do not leave the task stuck.
+      forceKill = setTimeout(() => child.kill('SIGKILL'), 2000);
+      forceKill.unref();
+    };
+    process.on('SIGINT', interrupt);
+    process.on('SIGTERM', interrupt);
+    child.once('error', error => {
+      cleanup();
       reject(error.code === 'ENOENT' ? new Error('sqlcmd not found. Install it or pass --sqlcmd /absolute/path/to/sqlcmd.') : error);
     });
     child.once('exit', (code, signal) => {
-      process.off('SIGINT', interrupt);
-      resolve(code ?? 128 + (constants.signals[signal] || 1));
+      cleanup();
+      resolve(interrupted ? 130 : code ?? 128 + (constants.signals[signal] || 1));
     });
   });
 }

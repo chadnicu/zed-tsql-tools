@@ -5,11 +5,50 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { addProfile, readProfiles } from '../src/profiles.js';
+import { setTimeout as delay } from 'node:timers/promises';
+import { addProfile, readProfiles, validateProfile } from '../src/profiles.js';
 import { queryCommand, runQuery } from '../src/query.js';
 
 const profile = { server: 'localhost,1433', database: 'My Database', auth: 'sql', user: 'dev', passwordEnv: 'DB_PASSWORD' };
 const cli = fileURLToPath(new URL('../bin/query.js', import.meta.url));
+
+test('rejects terminal control sequences in stored connection metadata', async t => {
+  assert.throws(() => validateProfile({ ...profile, server: '\x1b[2Jlocalhost' }), /valid server/);
+  assert.throws(() => validateProfile({ ...profile, user: 'user\tspoof' }), /requires a user/);
+  const directory = await mkdtemp(join(tmpdir(), 'tsql invalid profile '));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const path = join(directory, 'profiles.json');
+  await writeFile(path, JSON.stringify({ ['dev\x1b[2J']: profile }));
+  await assert.rejects(readProfiles(path), /Profile names/);
+});
+
+test('cancellation exits with a failure status and removes signal listeners', async () => {
+  const before = process.listenerCount('SIGINT');
+  const running = runQuery(process.execPath, { args: ['-e', 'setInterval(() => {}, 1000)'], env: process.env });
+  process.emit('SIGINT');
+  assert.equal(await running, 130);
+  assert.equal(process.listenerCount('SIGINT'), before);
+});
+
+test('cancellation terminates a client that ignores SIGINT', { skip: process.platform === 'win32', timeout: 6000 }, async t => {
+  const directory = await mkdtemp(join(tmpdir(), 'tsql cancellation '));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const ready = join(directory, 'ready');
+  const script = `process.on('SIGINT', () => {}); require('node:fs').writeFileSync(${JSON.stringify(ready)}, 'ready'); setInterval(() => {}, 1000);`;
+  const running = runQuery(process.execPath, { args: ['-e', script], env: process.env });
+  let started = false;
+  try {
+    for (let attempt = 0; attempt < 100; attempt++) {
+      try { await readFile(ready); started = true; break; }
+      catch (error) { if (error.code !== 'ENOENT') throw error; }
+      await delay(20);
+    }
+    assert.ok(started, 'Child did not become ready');
+  } finally {
+    process.emit('SIGINT');
+    assert.equal(await running, 130);
+  }
+});
 
 test('profiles persist, never save secrets, and reject duplicate names and password fields', async t => {
   const dir = await mkdtemp(join(tmpdir(), 'mssql profiles '));

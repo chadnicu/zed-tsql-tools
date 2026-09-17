@@ -126,3 +126,12 @@ Spec source: the conversation, especially the user's ordered three-stage request
 the confirmed successful formatter integration in another project, the request
 for use on other machines, and the instruction to leave publishing for later.
 There is no originating issue tracker or external ticket for this work.
+
+## Release-readiness follow-up
+
+The user subsequently requested professional open-source preparation: security
+scanning, code cleanup, documentation, and exact steps for GitHub/npm/community
+distribution. This authorizes local fixes, contributor/security documents,
+automated checks, and release configuration tooling. It does not authorize remote
+publication. Identify account/metadata inputs and unfinished platform/editor
+validation clearly; do not substitute configured CI for a successful run.

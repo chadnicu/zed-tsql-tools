@@ -15,7 +15,11 @@
   },
   "scripts": {
     "test": "node --test",
-    "pack:portable": "npm pack --ignore-scripts --pack-destination dist"
+    "pack:portable": "node scripts/pack.js",
+    "test:package": "node scripts/package-smoke.js",
+    "configure:release": "node scripts/configure-release.js",
+    "check:release": "node scripts/check-release.js",
+    "prepublishOnly": "npm run check:release && npm test && npm run test:package"
   },
   "dependencies": {
     "poor-mans-t-sql-formatter": "1.6.10",
@@ -30,11 +34,31 @@
     "README.md",
     "THIRD_PARTY.md",
     "LICENSE",
-    "PUBLISHING.md"
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "docs/formatting.md",
+    "docs/query-helper.md",
+    "docs/portability.md",
+    "docs/release-status.md",
+    "docs/security-audit.md",
+    "PUBLISHING.md",
+    "CONTRIBUTING.md",
+    "extension/LICENSE",
+    "docs/acceptance.md",
+    "docs/release-requirements.md",
+    "docs/registry-pr.md"
   ],
   "bundledDependencies": [
     "poor-mans-t-sql-formatter",
     "vscode-languageserver",
     "vscode-languageserver-textdocument"
+  ],
+  "keywords": [
+    "zed",
+    "sql",
+    "tsql",
+    "sql-server",
+    "formatter",
+    "language-server"
   ]
 }

@@ -10,20 +10,26 @@ export function defaultProfilesPath() {
   return join(base, 'zed-mssql-tools', 'profiles.json');
 }
 
+function validateProfileName(name) {
+  if (!/^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(name)) {
+    throw new Error('Profile names must use letters, digits, underscores or hyphens.');
+  }
+}
+
 export function validateProfile(profile) {
   if (!profile || typeof profile !== 'object' || Array.isArray(profile)) throw new Error('Invalid connection profile.');
   for (const key of Object.keys(profile)) {
     if (!['server', 'database', 'user', 'passwordEnv', 'auth', 'trustServerCertificate'].includes(key)) {
-      throw new Error(`Unknown profile field: ${key}`);
+      throw new Error(`Unknown profile field: ${JSON.stringify(key)}`);
     }
   }
   for (const key of ['server', 'database']) {
-    if (typeof profile[key] !== 'string' || !profile[key].trim() || profile[key].startsWith('-') || /[\r\n\0]/.test(profile[key])) {
+    if (typeof profile[key] !== 'string' || !profile[key].trim() || profile[key].startsWith('-') || /[\x00-\x1f\x7f]/.test(profile[key])) {
       throw new Error(`Profile requires a valid ${key}.`);
     }
   }
   if (!['sql', 'integrated'].includes(profile.auth)) throw new Error('Auth must be sql or integrated.');
-  if (profile.auth === 'sql' && (typeof profile.user !== 'string' || !profile.user.trim() || /^-|[\r\n\0]/.test(profile.user))) {
+  if (profile.auth === 'sql' && (typeof profile.user !== 'string' || !profile.user.trim() || /^-|[\x00-\x1f\x7f]/.test(profile.user))) {
     throw new Error('SQL authentication requires a user.');
   }
   if (profile.auth === 'integrated' && (profile.user !== undefined || profile.passwordEnv !== undefined)) {
@@ -44,14 +50,17 @@ export async function readProfiles(path) {
   catch (error) { if (error.code === 'ENOENT') return {}; throw error; }
   const profiles = JSON.parse(text);
   if (!profiles || typeof profiles !== 'object' || Array.isArray(profiles)) throw new Error('Profiles file must be a JSON object.');
-  for (const profile of Object.values(profiles)) validateProfile(profile);
+  for (const [name, profile] of Object.entries(profiles)) {
+    validateProfileName(name);
+    validateProfile(profile);
+  }
   return profiles;
 }
 
 export async function addProfile(path, name, profile) {
-  if (!/^[A-Za-z0-9][A-Za-z0-9_-]*$/.test(name)) throw new Error('Profile names must use letters, digits, underscores or hyphens.');
+  validateProfileName(name);
   validateProfile(profile);
-  await mkdir(dirname(path), { recursive: true });
+  await mkdir(dirname(path), { recursive: true, mode: 0o700 });
   // Serialize writers; never overwrite a concurrently added profile.
   const lockPath = `${path}.lock`;
   try { await writeFile(lockPath, '', { flag: 'wx', mode: 0o600 }); }
