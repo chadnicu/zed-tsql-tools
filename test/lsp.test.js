@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { fileURLToPath } from 'node:url';
-import { createMessageConnection, StreamMessageReader, StreamMessageWriter } from 'vscode-jsonrpc/node.js';
+import { createMessageConnection, StreamMessageReader, StreamMessageWriter } from 'vscode-jsonrpc/node';
 
 test('LSP formats unsaved Unicode documents, follows edits, and rejects malformed SQL', { timeout: 10000 }, async t => {
   const child = spawn(process.execPath, [fileURLToPath(new URL('../bin/lsp.js', import.meta.url))], { stdio: ['pipe', 'pipe', 'pipe'] });

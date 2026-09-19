@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { createConnection, TextDocuments, TextDocumentSyncKind, ResponseError, ErrorCodes } from 'vscode-languageserver/node.js';
+import { createConnection, TextDocuments, TextDocumentSyncKind, ResponseError, ErrorCodes } from 'vscode-languageserver/node';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { formatSql, validateOptions } from '../src/formatter.js';
 import { readFileSync } from 'node:fs';
