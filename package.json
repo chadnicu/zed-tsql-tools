@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "poor-mans-t-sql-formatter": "1.6.10",
-    "vscode-languageserver": "9.0.1",
+    "vscode-languageserver": "10.1.1",
     "vscode-languageserver-textdocument": "1.0.12"
   },
   "license": "AGPL-3.0-only",
