@@ -1,6 +1,6 @@
 # Release status
 
-Version: 0.1.0, unreleased. Updated 2026-09-17.
+Version: 0.1.0, unreleased. Updated 2026-09-19.
 
 | Check | Status |
 | --- | --- |
@@ -10,11 +10,12 @@ Version: 0.1.0, unreleased. Updated 2026-09-17.
 | Windows Node 22/24 | CI configured; not run here |
 | Linux Node 24 | CI configured; not run here |
 | Rust dependencies | Locked and checked against OSV |
-| WASM adapter build | Pending local/CI build |
-| Dev adapter in Zed, Linux/Windows | Pending manual acceptance |
+| WASM adapter build | Maintainer reported local build passed; dev extension loaded on Linux |
+| Dev adapter in Zed, Linux | Maintainer confirmed formatting on save in a scratch project with local binary settings at commit 3059ab1; Zed version and remaining acceptance checks pending |
+| Dev adapter in Zed, Windows | Pending manual acceptance |
 | Automatic npm installation in Zed | Implemented; disabled until npm publication and untested live |
 | Live SQL Server query helper | Pending; experimental |
-| npm account, GitHub owner/repository | Maintainer must configure |
+| npm account, GitHub owner/repository | Configured: @onta.nicolae/tsql-tools and chadnicu/zed-tsql-tools |
 | Public npm/gallery publication | Not performed |
 
 The repository can be shared for development. Do not describe it as a verified
