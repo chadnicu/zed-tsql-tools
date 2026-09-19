@@ -44,7 +44,7 @@ try {
     lock.name = pkg.name;
     lock.packages[''].name = pkg.name;
     lock.packages[''].version = pkg.version;
-    let manifest = await readFile(new URL('extension/extension.toml', root), 'utf8');
+    let manifest = (await readFile(new URL('extension/extension.toml', root), 'utf8')).replace(/\r\n/g, '\n');
     manifest = manifest.replace(/^authors = .*$/m, () => `authors = [${JSON.stringify(values.author)}]`);
     manifest = manifest.replace(/^repository = .*\n/gm, '');
     manifest = manifest.replace(/^capabilities = .*$/m, () => `capabilities = [{ kind = "npm:install", package = ${JSON.stringify(pkg.name)} }]`);

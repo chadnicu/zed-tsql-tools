@@ -1,5 +1,9 @@
 name: Security
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
@@ -16,8 +20,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci --ignore-scripts
-      - run: npm audit --omit=dev
-      - run: python3 scripts/audit-rust.py
+      - run: python3 scripts/audit-dependencies.py
       - name: Scan full Git history for secrets
         working-directory: ${{ runner.temp }}
         run: |

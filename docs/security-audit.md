@@ -45,5 +45,9 @@ CodeQL is configured but has not run locally. WASM compilation, real Zed adapter
 installation, Windows behavior, and live SQL Server authentication/cancellation
 remain manual/CI release gates. See [release status](release-status.md).
 
-Reproduce with `npm audit --omit=dev`, `python3 scripts/audit-rust.py`,
+Current CI uses `python3 scripts/audit-dependencies.py` for both npm and Rust,
+including bundled npm dependencies. This replaces the npm audit CLI after its
+quick-audit endpoint returned HTTP 400 on 2026-09-19. Endpoint errors still fail CI.
+
+Reproduce with `python3 scripts/audit-dependencies.py`,
 `gitleaks git --redact`, `npm test`, and `npm run test:package`.

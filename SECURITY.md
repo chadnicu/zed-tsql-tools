@@ -35,7 +35,7 @@ release; report against the current main branch.
 
 ## Checks
 
-`npm audit --omit=dev`, Gitleaks, package-content checks, and behavioral tests are
+OSV checks of both committed dependency lockfiles, Gitleaks, package-content checks, and behavioral tests are
 part of release validation. GitHub CI also runs CodeQL and dependency updates.
 These checks cannot prove the absence of vulnerabilities. See
 [the audit record](docs/security-audit.md) for what actually ran and remaining gaps.

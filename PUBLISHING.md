@@ -55,7 +55,7 @@ Install Node 22+ and Rust through rustup if missing. Then:
 npm ci --ignore-scripts
 npm test
 npm run test:package
-npm audit --omit=dev
+python3 scripts/audit-dependencies.py
 rustup target add wasm32-wasip2
 cargo fmt --manifest-path extension/Cargo.toml --check
 cargo build --locked --manifest-path extension/Cargo.toml --target wasm32-wasip2 --release
