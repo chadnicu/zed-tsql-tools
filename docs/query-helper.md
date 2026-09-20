@@ -65,7 +65,16 @@ For another worktree, copy `.zed/tasks.json` and replace `bin/query.js` with the
 absolute script path. Duplicate the run task with a different profile name for
 another connection. Use `--sqlcmd /absolute/path/to/sqlcmd` if it is not on PATH.
 The helper propagates sqlcmd's exit status (`-b` enabled) and streams output
-directly without buffering result sets in Node. SQL input files are UTF-8.
+directly without buffering result sets in Node. Use UTF-8 SQL input files with
+sqlcmd (Go). The helper does not pass the ODBC-only `-f` encoding flag because
+Go sqlcmd rejects it. With ODBC sqlcmd, encoding follows the client's defaults;
+verify non-ASCII input and output before using that variant.
+
+To check flags against an installed client without connecting (fish):
+
+```fish
+env TEST_SQLCMD=(command -v sqlcmd) node --test --test-name-pattern='installed sqlcmd' test/query.test.js
+```
 
 No object explorer, grid, query history, persistent session, or selection runner
 yet. Each run starts a new sqlcmd process. sqlcmd scripting commands are passed

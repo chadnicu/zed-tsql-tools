@@ -12,6 +12,17 @@ import { queryCommand, runQuery } from '../src/query.js';
 const profile = { server: 'localhost,1433', database: 'My Database', auth: 'sql', user: 'dev', passwordEnv: 'DB_PASSWORD' };
 const cli = fileURLToPath(new URL('../bin/query.js', import.meta.url));
 
+test('installed sqlcmd accepts generated flags without connecting', { skip: !process.env.TEST_SQLCMD }, () => {
+  const command = queryCommand({ server: 'unused.invalid', database: 'test', auth: 'sql', user: 'test' }, 'unused.sql', {});
+  // Help parses flags and exits before opening a file or connecting to a server.
+  const result = spawnSync(process.env.TEST_SQLCMD, [...command.args, '-?'], {
+    encoding: 'utf8', timeout: 5000, env: { HOME: tmpdir(), USERPROFILE: tmpdir() },
+  });
+  assert.ifError(result.error);
+  assert.equal(result.status, 0, result.stderr);
+  assert.doesNotMatch(result.stderr, /Unknown Option/i);
+});
+
 test('rejects terminal control sequences in stored connection metadata', async t => {
   assert.throws(() => validateProfile({ ...profile, server: '\x1b[2Jlocalhost' }), /valid server/);
   assert.throws(() => validateProfile({ ...profile, user: 'user\tspoof' }), /requires a user/);
