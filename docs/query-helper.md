@@ -79,3 +79,9 @@ env TEST_SQLCMD=(command -v sqlcmd) node --test --test-name-pattern='installed s
 No object explorer, grid, query history, persistent session, or selection runner
 yet. Each run starts a new sqlcmd process. sqlcmd scripting commands are passed
 through unchanged.
+
+Results use `|` between columns and trim trailing spaces (`-s | -W`) to avoid
+padding short values to the database column's declared width. This is terminal
+display, not an escaped CSV export; values can themselves contain pipes or
+newlines. Connection and authentication happen on every run, so this helper does
+not provide the latency of an editor with a persistent database session.

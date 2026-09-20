@@ -1,7 +1,6 @@
 {
   "name": "@onta.nicolae/tsql-tools",
   "version": "0.1.0",
-  "private": true,
   "description": "Poor Man's T-SQL formatting and sqlcmd tasks for Zed",
   "type": "module",
   "engines": {

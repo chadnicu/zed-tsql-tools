@@ -7,7 +7,7 @@ export function queryCommand(profile, file, environment = process.env) {
   // sqlcmd environment defaults must not silently override the selected profile.
   const env = Object.fromEntries(Object.entries(environment).filter(([key]) => !key.toUpperCase().startsWith('SQLCMD')));
   // Go sqlcmd reads UTF-8 and rejects the ODBC-only -f code-page option.
-  const args = ['-S', profile.server, '-d', profile.database, '-b', '-r', '1'];
+  const args = ['-S', profile.server, '-d', profile.database, '-b', '-r', '1', '-W', '-s', '|'];
   if (profile.auth === 'integrated') args.push('-E');
   else {
     args.push('-U', profile.user);
