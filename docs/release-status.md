@@ -13,7 +13,7 @@ Version: 0.1.0, published to npm; gallery submission pending. Updated 2026-09-20
 | WASM adapter build | Maintainer reported local build passed; dev extension loaded on Linux |
 | Dev adapter in Zed, Linux | Maintainer confirmed formatting on save in a scratch project with local binary settings at commit 3059ab1; Zed version and remaining acceptance checks pending |
 | Dev adapter in Zed, Windows | Pending manual acceptance |
-| Automatic npm installation in Zed | Enabled for published npm 0.1.0; manual download/formatting check pending |
+| Automatic npm installation in Zed | Maintainer reports following reinstall/no-binary-override steps at f8bcfd1 and confirms scratch SQL formats on save on Linux; installed CLI reports Zed 1.20.2, Windows untested |
 | Live SQL Server query helper | Maintainer confirmed a SELECT query on Linux; broader acceptance pending; experimental |
 | npm account, GitHub owner/repository | Configured: @onta.nicolae/tsql-tools and chadnicu/zed-tsql-tools |
 | Public npm/gallery publication | npm 0.1.0 verified; Zed gallery pending |
