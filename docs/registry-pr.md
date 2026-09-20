@@ -1,17 +1,16 @@
-Adds a formatting-only language server for Poor Man's T-SQL Formatter.
+Adds Poor Man's T-SQL Formatter, a formatting-only language server for SQL Server scripts. It uses the existing SQL language/grammar and complements the SQL extension with document formatting and format on save.
 
-It reuses the existing SQL language/grammar and adds document formatting for T-SQL
-scripts. The Rust adapter installs an exact version of the scoped npm package
-through Zed's extension API. The adapter is MIT licensed; the separate Node
-formatter is AGPL-3.0-only. No database connection is needed for formatting.
+The Rust adapter installs the exact version `@onta.nicolae/tsql-tools@0.1.0` through Zed's npm API. The adapter is MIT licensed; the separately downloaded Node formatter is AGPL-3.0-only. Formatting requires no database connection. The optional query CLI in the source repository is not registered by this extension.
 
-The extension directory is `extension/` in the linked repository. The optional
-query helper is a separate CLI and is not registered by this extension.
+The extension lives in `extension/`, selected by the registry entry's `path` field.
 
 Validation:
 
-- Submitted commit: [REPLACE WITH FULL COMMIT]
-- Linux: [REPLACE WITH ZED/OS VERSION AND MANUAL RESULT]
-- Windows: [REPLACE WITH ZED/OS VERSION AND MANUAL RESULT]
-- Clean automatic npm installation: [REPLACE WITH RESULT]
-- Node tests, offline package test, WASM build, and security CI: [REPLACE WITH CI LINK]
+- Submitted commit: ce5d0810cff0be7c02b0759c3bf8f1c63ae9ba7a, reachable on main.
+- Maintainer confirmed reinstalling the dev extension and formatting on save after restarting Zed at this revision: Fedora 44, Zed 1.20.2.
+- Maintainer reported following the no-binary-override installation steps and successful formatting with the published npm package; an independent fresh-profile installation was not separately verified.
+- Windows/Linux Node 22/24 tests, offline package installation, and WASM build: [Test CI passed](https://github.com/chadnicu/zed-tsql-tools/actions/runs/35502136117).
+- Dependency/secret scans and CodeQL: [Security CI passed](https://github.com/chadnicu/zed-tsql-tools/actions/runs/35502136124).
+- Windows Zed manual testing has not been performed.
+
+- [x] I've read [the contribution guidelines](https://github.com/zed-industries/extensions/blob/main/CONTRIBUTING.md) and followed the relevant guidance for adding or updating my extension.
